@@ -5,7 +5,7 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 	<meta name="theme-color" content="#33474d">
-	<title>PlayGround</title>
+	<title>Unity3D 基础课堂 | PlayGround</title>
 	<link rel="stylesheet" href="/css/style.css" />
 	<link rel="stylesheet" href="/css/code.css" media="screen" type="text/css">
 	
@@ -45,13 +45,9 @@
 	</header>
 
 	<main>
-		
-
-
-
-	<article>
+		<article>
 	
-		<h1><a href="/2017/03/02/unity1/">Unity3D 基础课堂</a></h1>
+		<h1>Unity3D 基础课堂</h1>
 	
 	<div class="article__infos">
 		<span class="article__date">2017-03-02</span><br />
@@ -68,20 +64,57 @@
 	
 		<h2 id="架构"><a href="#架构" class="headerlink" title="架构"></a>架构</h2><p>每个项目为一个Project，每个Project包含很多Scene，Scene只管来说就是游戏中的场景、关卡之类的，当然也包括开始画面等等。</p>
 <p>Scene中包括很多GameObject,Unity中GameObject是一个引擎写好的类，用以表示游戏世界中的所有游戏对象（包括物体、人物、摄像机、灯光等等）不同类型的游戏对象是通过GameObject下不同的Component组件来区分的。</p>
-		<p><a class="article__read-more-link" href="/2017/03/02/unity1/">...read more</a></p>
+<a id="more"></a>
+<p><figure class="figure"><img src="/images/unity1/img3.png" alt=""></figure></p>
+<h2 id="几何体预设"><a href="#几何体预设" class="headerlink" title="几何体预设"></a>几何体预设</h2><p>在大纲视图点击右键可以看到3D Object的字样，其中可以选择在场景中新建很多预设的几何体。</p>
+<p><figure class="figure"><img src="/images/unity1/img1.png" alt=""></figure></p>
+<h2 id="调整游戏对象的属性"><a href="#调整游戏对象的属性" class="headerlink" title="调整游戏对象的属性"></a>调整游戏对象的属性</h2><p>选中物体后，可以通过左上角的5个工具来修改属性，也可以直接修改右侧属性面板中的Transform组件数值来改变游戏对象的位置、大小、旋转等</p>
+<p><figure class="figure"><img src="/images/unity1/img2.png" alt=""></figure></p>
+<h2 id="让物体感受到物理引擎"><a href="#让物体感受到物理引擎" class="headerlink" title="让物体感受到物理引擎"></a>让物体感受到物理引擎</h2><p>Unity中的游戏对象如果想要使用物理引擎，就一定要具有Rigidbody刚体组件，可以在选中物体后在右侧点击Add Component中找到RigidBody来添加</p>
+<h2 id="添加代码"><a href="#添加代码" class="headerlink" title="添加代码"></a>添加代码</h2><p>在资源面板邮件点击，找到Create -&gt; C#，创建一个以类名命名的脚本。并将脚本挂载到物体上。</p>
+<p>脚本中Start函数为该物体生成时执行的函数。</p>
+<p>Update函数为游戏进行时每帧会执行的函数</p>
+<p>我们在Update函数中添加下面的代码：</p>
+<pre><code class="c#">public float speed = 1;
+
+void Start() {
+
+}
+
+void Update() {
+  if(Input.GetKey(KeyCode.W)) {
+    transform.Translate(new Vector3(0,0,speed * Time.deltaTime));
+  }
+}
+</code></pre>
+<h2 id="使用Prefab预设"><a href="#使用Prefab预设" class="headerlink" title="使用Prefab预设"></a>使用Prefab预设</h2><p>新建一个物体，并把物体拖动到下面的资源面板，这样它就成为了一个Prefab预设</p>
+<p>我们对代码进行一些修改：</p>
+<pre><code class="c#">public float speed = 1;
+
+public GameObject BulletPrefab;
+void Start() {
+
+}
+
+void Update() {
+  if(Input.GetKey(KeyCode.W)) {
+    transform.Translate(new Vector3(0,0,speed * Time.deltaTime));
+  }
+
+  if(Input.GetKeyDown(KeyCode.Space)) {
+    Inisiate(BulletPrefab,transform.position,transform.rotation);
+  }
+}
+</code></pre>
+
 	
+
+	
+		<span class="different-posts"><a href="/2017/03/02/unity1/" onclick="window.history.go(-1); return false;">Go back </a></span>
 
 	
 
 </article>
-
-
-
-
-
-
-	<span class="different-posts">End of posts</span>
-
 
 	</main>
 
