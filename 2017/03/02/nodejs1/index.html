@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<meta name="theme-color" content="#33474d">
+	<title>关于后端的一些讨论 | PlayGround</title>
+	<link rel="stylesheet" href="/css/style.css" />
+	<link rel="stylesheet" href="/css/code.css" media="screen" type="text/css">
+	
+      <link rel="alternate" href="/atom.xml" title="PlayGround" type="application/atom+xml">
+  
+	<style media="screen">
+  pre{
+    word-break: break-all;
+    word-wrap: break-word;
+  }
+  </style>
+
+	<script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.js"></script>
+  <script type="text/javascript">
+  $(window).load(function(){
+    $('pre').addClass('prettyprint linenums').attr('style', 'overflow:hidden;');
+    prettyPrint();
+  })
+  </script>
+</head>
+
+<body>
+
+	<header class="header">
+		<nav class="header__nav">
+			
+				<a href="/archives" class="header__link">Archive</a>
+			
+				<a href="/tags" class="header__link">Tags</a>
+			
+				<a href="/atom.xml" class="header__link">RSS</a>
+			
+		</nav>
+		<h1 class="header__title"><a href="/">PlayGround</a></h1>
+		<h2 class="header__subtitle"></h2>
+	</header>
+
+	<main>
+		<article>
+	
+		<h1>关于后端的一些讨论</h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2017-03-02</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/Nodejs/">Nodejs</a>
+			</span>
+		
+	</div>
+
+	
+
+	
+		<h3 id="JS基础"><a href="#JS基础" class="headerlink" title="JS基础"></a>JS基础</h3><ul>
+<li>异步</li>
+<li><font color="red"><strong>同步</strong></font>: CPU需要计算10个数据，每计算一个结果后，将其写入磁盘，等待写入成功后，再计算下一个数据，直到完成。<font color="red"><strong>异步</strong></font>：CPU需要计算10个数据，每计算一个结果后，将其写入磁盘，不等待写入成功与否的结果，立刻返回继续计算下一个数据，计算过程中可以收到之前写入是否成功的通知，直到完成。</li>
+</ul>
+<a id="more"></a>
+<ul>
+<li><p><font color="red"><strong>高级函数</strong></font>: 把函数作为参数或者是作为返回值 <strong>(异步编程的基础)</strong></p>
+<pre><code>   for (var i = 1; i &lt;= 3; i++) {
+        setTimeout(function(){
+          console.log(i);
+        }, 0);
+  }
+</code></pre></li>
+<li><p><strong>异步的一个定义是函数调用不返回原来代码调用处</strong></p>
+<pre><code>  function Add(a, b){
+      return a+b;
+  }
+  Add(1, 2) // =&gt; 3
+
+  function LazyAdd(a){
+      return function(b){
+          return a+b;
+      }
+  }
+  var result = LazyAdd(1);
+  console.log(&#39;wait some time, doing some fun&#39;);
+  result = result(2) // =&gt; 3
+</code></pre></li>
+<li>回调</li>
+<li><p><strong>使用异步编程的优美的设计方案，更专注于回调函数的设计。代码可读性高，API不撕裂。</strong></p>
+<pre><code class="Javascript">   function Add(a, b){
+      return a+b;
+  }
+
+  function LazyAdd(a, cb){
+      return function(b){
+          cb(a, b);
+      }
+  }
+
+  var result = LazyAdd(1, Add)
+  result = result(2); // =&gt; 3
+</code></pre>
+</li>
+<li><p><strong>回调地狱：</strong></p>
+<ul>
+<li>解决方案： <a href="http://liubin.org/promises-book/#ch2-promise-resolve" target="_blank" rel="external">Promise迷你书</a>      <a href="https://cnodejs.org/topic/5640b80d3a6aa72c5e0030b6" target="_blank" rel="external">ES7 Async/Await</a></li>
+</ul>
+</li>
+<li><p>eventLoop</p>
+</li>
+<li><p>所以如果有很多这样的函数，每一个都要跑一个观察者模式，在一定条件下看上去比较费计算。这时EventLoop诞生了，派一个人来轮询所有的，其他人都可以把观察条件和回调函数注册在EventLoop上，它进行统一的轮询，注册的人越多，轮询一圈的时间越长。但是简化了编程，不用每个人都写轮询了。</p>
+<pre><code class="Javascript">function Add(a, b){
+    return a+b;
+}
+
+function LazyAdd(a, cb){
+    return function(b){
+        cb(a, b);
+    }
+}
+
+var result = LazyAdd(1, Add)
+var button = false;
+
+while(true){
+    if(button){
+        result = result(2);
+        break;
+    }
+}
+
+result = result(2); // =&gt; 3
+</code></pre>
+</li>
+</ul>
+<h3 id="NODEJS网络层"><a href="#NODEJS网络层" class="headerlink" title="NODEJS网络层"></a>NODEJS网络层</h3><ul>
+<li><font color="red">net模块</font><strong>（网络编程的核心模块）</strong> </li>
+<li><p>net模块提供了一个异步网络包装器，用于TCP网络编程  <a href="https://nodejs.org/api/net.html" target="_blank" rel="external">net API文档</a></p>
+<pre><code class="Javascript">// 服务端
+var net = require(&#39;net&#39;);
+
+// 创建TCP服务器
+var server = net.createServer(function(socket) {
+   console.log(&#39;client connected&#39;);
+
+   // 监听客户端的数据
+   socket.on(&#39;data&#39;, function(data) {
+       console.log(&#39;server got data from client: &#39;, data.toString());
+   });
+   // 监听客户端断开连接事件
+   socket.on(&#39;end&#39;, function(data) {
+       console.log(&#39;connection closed&#39;);
+   });
+   // 发送数据给客户端
+   socket.write(&#39;Hello\r\n&#39;);
+});
+
+// 启动服务
+server.listen(8080, function() {
+   console.log(&#39;server bound&#39;);
+});
+</code></pre>
+<pre><code class="Javascript">// 客户端
+var net = require(&#39;net&#39;);
+
+// 连接服务器
+var client = net.connect({port: 8080}, function() {
+   console.log(&#39;connected to server&#39;);
+   client.write(&#39;World!\r\n&#39;);
+});
+
+// 接收服务端的数据
+client.on(&#39;data&#39;, function(data) {
+   console.log(&#39;client got data from server: &#39;, data.toString());
+   // 断开连接
+   client.end();
+});
+
+// 断开连接
+client.on(&#39;end&#39;, function() {
+   console.log(&#39;disconnected from server&#39;);
+});
+</code></pre>
+</li>
+<li>可以通过此实现不支持的IRC、POP应用层协议及其他的应用层协议</li>
+<li><font color="red">dgram模块</font><strong>（UDP编程核心模块）</strong><br> <figure class="figure"><img src="/images/nodejs1/img1.png" alt=""></figure></li>
+<li><strong>单播：</strong>向一个单播地址发送UDP数据报时，数据报只能被指定的IP主机接收，同一子网下的其它主机都不会接收该数据报。单播过程（假设子网地址：192.168.10，该子网下有两台主机：192.168.10.2，192.168.10.3，向192.168.10.2发送数据报）<ul>
+<li>向主机192.168.10.2的8060端口发送数据报，该IP数据报目标IP在以太网中被ARP解析成MAC地址，然后将此MAC地址设置为目标地址发出去。</li>
+<li>该子网下的主机以太网接口看到该数据帧时，对比自己的MAC地址，如果不一样，则忽略该数据帧。</li>
+<li>直到192.168.10.2主机看到该数据帧时，发现MAC一致，则读入该数据帧，然后在IP层对比目标IP和本机IP，在UDP层对比端口号是否一致，最后接收该数据帧。</li>
+</ul>
+</li>
+<li><p><strong>广播：</strong>向一个广播地址发送UDP数据报，该广播网络下的所有主机都会受到影响，主机根据端口号来判断是否丢弃该数据。广播过程（假设子网地址：192.168.10，则该网络的广播地址为：192.168.10.255，该子网下有两台主机：192.168.10.2，192.168.10.3，向192.168.10.255发送数据报）：</p>
+<ul>
+<li>向192.168.10.255主机端口为8060发送数据报，，该IP数据报目标IP在以太网中被ARP解析成MAC地址，然后将此MAC地址设置为目标地址发出去。</li>
+<li>192.168.10.2和192.168.10.3的主机接口都会和此广播地址匹配成功，直到该数据报进入传输层时根据端口是否匹配判断是否丢弃该数据,端口为8060的会保留该数据，否则将数据丢弃。</li>
+</ul>
+<pre><code class="Javascript">// 单播模式 服务器
+const dgram = require(&#39;dgram&#39;);
+const server = dgram.createSocket(&#39;udp4&#39;);
+
+server.on(&#39;close&#39;,()=&gt;{
+   console.log(&#39;socket已关闭&#39;);
+});
+
+server.on(&#39;error&#39;,(err)=&gt;{
+   console.log(err);
+});
+
+server.on(&#39;listening&#39;,()=&gt;{
+   console.log(&#39;socket正在监听中...&#39;);
+});
+
+server.on(&#39;message&#39;,(msg,rinfo)=&gt;{
+   console.log(`receive message from ${rinfo.address}:${rinfo.port}`);
+   server.send(&#39;exit&#39;,rinfo.port,rinfo.address)
+});
+
+server.bind(&#39;8060&#39;);
+</code></pre>
+<pre><code>// 单播模式 客户端
+const dgram = require(&#39;dgram&#39;);
+const client = dgram.createSocket(&#39;udp4&#39;);
+
+client.on(&#39;close&#39;,()=&gt;{
+   console.log(&#39;socket已关闭&#39;);
+});
+
+client.on(&#39;error&#39;,(err)=&gt;{
+   console.log(err);
+});
+client.on(&#39;message&#39;,(msg,rinfo)=&gt;{
+   if(msg==&#39;exit&#39;) client.close();
+   console.log(`receive message from ${rinfo.address}:${rinfo.port}`);
+});
+client.send(`hello`,8060,&#39;1.1.1.69&#39;);
+</code></pre><pre><code>// 广播模式 服务端
+const dgram = require(&#39;dgram&#39;);
+const server = dgram.createSocket(&#39;udp4&#39;);
+
+server.on(&#39;close&#39;,()=&gt;{
+   console.log(&#39;socket已关闭&#39;);
+});
+
+server.on(&#39;error&#39;,(err)=&gt;{
+   console.log(err);
+});
+
+server.on(&#39;listening&#39;,()=&gt;{
+   console.log(&#39;socket正在监听中...&#39;);
+   server.setBroadcast(!0); //开启广播
+   server.setTTL(128); //设置数据包的生存时间
+   server.send(&#39;大家好啊，我是服务端.&#39;,8061,&#39;1.1.1.255&#39;);
+});
+
+server.on(&#39;message&#39;,(msg,rinfo)=&gt;{
+   console.log(`receive message from ${rinfo.address}:${rinfo.port}`);
+});
+
+server.bind(&#39;8060&#39;,&#39;1.1.1.69&#39;);
+</code></pre></li>
+<li><font color="red">http模块</font></li>
+<li><strong>http.Server：</strong><ul>
+<li><strong>request：</strong>当客户端请求到来时，该事件被触发，提供两个参数req和res，表示请求和响应信息，是最常用的事件</li>
+<li><strong>connection：</strong>当TCP连接建立时，该事件被触发，提供一个参数socket，是net.Socket的实例</li>
+<li><strong>close：</strong>当服务器关闭时，触发事件（注意不是在用户断开连接时） </li>
+<li><font color="red">req和res是http.IncomingMessage和http.ServerResponse的实例 </font></li>
+</ul>
+</li>
+<li><strong>http.IncomingMessage：</strong><ul>
+<li><strong>data：</strong>当请求体数据到来时，该事件被触发，该事件提供一个参数chunk，表示接受的数据，如果该事件没有被监听，则请求体会被抛弃，该事件可能会被调用多次（这与nodejs是异步的有关系）</li>
+<li><strong>end：</strong>当请求体数据传输完毕时，该事件会被触发，此后不会再有数据</li>
+<li><strong>close：</strong>用户当前请求结束时，该事件被触发，不同于end，如果用户强制终止了传输，也是用close<br><figure class="figure"><img src="http://upload-images.jianshu.io/upload_images/1641380-fd23fe5916475424.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="incomingMessage"><figcaption class="figure__caption">incomingMessage</figcaption></figure> </li>
+</ul>
+</li>
+<li><strong>http.ServerResponse：</strong> <ul>
+<li><strong>res.writeHead(statusCode,[heasers])：</strong>向请求的客户端发送响应头，该函数在一个请求中最多调用一次，如果不调用，则会自动生成一个响应头</li>
+<li><strong>res.write(data,[encoding])：</strong>想请求的客户端发送相应内容，data是一个buffer或者字符串，如果data是字符串，则需要制定编码方式，默认为utf-8，在res.end调用之前可以多次调用</li>
+<li><strong>res.end([data],[encoding])：</strong>结束响应，告知客户端所有发送已经结束，当所有要返回的内容发送完毕时，该函数必需被调用一次，两个可选参数与res.write()相同。如果不调用这个函数，客户端将用于处于等待状态。</li>
+</ul>
+</li>
+<li><p><strong>客户端行为</strong></p>
+<ul>
+<li><strong>http.get(options,callback)</strong></li>
+<li>options常用的参数有host、port（默认为80）、method（默认为GET）、path（请求的相对于根的路径，默认是“/”，其中querystring应该包含在其中，例如/search?query=byvoid）、headers（请求头内容） </li>
+<li><strong>http.request(options,callback)</strong></li>
+<li>这个方法是http.request方法的简化版，唯一的区别是http.get自动将请求方法设为了GET请求，同时不需要手动调用req.end()，但是需要记住的是，如果我们使用http.request方法时没有调用end方法，服务器将不会收到信息。因为http.get和http.request方法都是放回一个http.ClientRequest对象。 </li>
+<li><strong>http.ClientRequest</strong></li>
+<li>http.ClientRequest是由http.request或者是http.get返回产生的对象，表示一个已经产生而且正在进行中的HTPP请求，提供一个response事件，也就是我们使用http.get和http.request方法中的回调函数所绑定的对象，我们可以显式地绑定这个事件的监听函数。</li>
+<li>http.ClientRequest也提供了write和end函数，用于向服务器发送请求体，通常用于POST、PUT等操作，所有写操作都必须调用end函数来通知服务器，否则请求无效。此外，这个对象还提供了abort()、setTimeout()等方法，具体可以参考文档。</li>
+</ul>
+<pre><code>var http=require(&quot;http&quot;);
+
+var options={
+    hostname:&quot;cn.bing.com&quot;,
+    port:80
+}
+
+var req=http.request(options);
+req.on(&quot;response&quot;,function(res){
+        res.setEncoding(&quot;utf-8&quot;);
+    res.on(&quot;data&quot;,function(chunk){
+        console.log(chunk.toString())
+    });
+    console.log(res.statusCode);
+})
+
+req.on(&quot;error&quot;,function(err){
+    console.log(err.message);
+});
+req.end();
+</code></pre><ul>
+<li><strong>http.ClientReponse</strong></li>
+<li>与http.ServerRequest相似，提供了三个事件，data、end、close，分别在数据到达、传输结束和连接结束时触发，其中data事件传递一个参数chunk，表示接受到的数据。其属性如下<br><figure class="figure"><img src="http://upload-images.jianshu.io/upload_images/1641380-8d78262d6e00a5d0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="属性"><figcaption class="figure__caption">属性</figcaption></figure></li>
+<li>response.setEncoding([encoding])：设置默认的编码，当data事件被触发时，数据将会以encoding编码，默认值是null，也就是不编码，以buffer形式存储</li>
+<li>response.pause()：暂停结束数据和发送事件，方便实现下载功能</li>
+<li>response.resume()：从暂停的状态中恢复 </li>
+</ul>
+</li>
+</ul>
+
+	
+
+	
+		<span class="different-posts"><a href="/2017/03/02/nodejs1/" onclick="window.history.go(-1); return false;">Go back </a></span>
+
+	
+
+</article>
+
+	</main>
+
+	<footer class="footer">
+	<div class="footer-content">
+		
+	      <div class="footer__element">
+	<p>Hi there, <br />welcome to my Blog glad you found it. Have a look around, will you?</p>
+</div>
+
+	    
+	      <div class="footer__element">
+	<h5>Check out</h5>
+	<ul class="footer-links">
+		<li class="footer-links__link"><a href="/archives">Archive</a></li>
+		
+		  <li class="footer-links__link"><a href="/atom.xml">RSS</a></li>
+	    
+		<li class="footer-links__link"><a href="/about">about page</a></li>
+		<li class="footer-links__link"><a href="/tags">Tags</a></li>
+		<li class="footer-links__link"><a href="/categories">Categories</a></li>
+	</ul>
+</div>
+
+	    
+
+		<div class="footer-credit">
+			<span>© 2017 TacGaming | Powered by <a href="https://hexo.io/">Hexo</a> | Theme <a href="https://github.com/HoverBaum/meilidu-hexo">MeiliDu</a></span>
+		</div>
+
+	</div>
+
+
+</footer>
+
+
+
+</body>
+
+</html>
