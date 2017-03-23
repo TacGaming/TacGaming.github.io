@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<meta name="theme-color" content="#33474d">
+	<title>前端框架的讨论 | PlayGround</title>
+	<link rel="stylesheet" href="/css/style.css" />
+	<link rel="stylesheet" href="/css/code.css" media="screen" type="text/css">
+	
+      <link rel="alternate" href="/atom.xml" title="PlayGround" type="application/atom+xml">
+  
+	<style media="screen">
+  pre{
+    word-break: break-all;
+    word-wrap: break-word;
+  }
+  </style>
+
+	<script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.js"></script>
+  <script type="text/javascript">
+  $(window).load(function(){
+    $('pre').addClass('prettyprint linenums').attr('style', 'overflow:hidden;');
+    prettyPrint();
+  })
+  </script>
+</head>
+
+<body style="overflow-x: hidden;">
+
+	<header class="header">
+		<nav class="header__nav">
+			
+				<a href="/archives" class="header__link">Archive</a>
+			
+				<a href="/tags" class="header__link">Tags</a>
+			
+				<a href="/atom.xml" class="header__link">RSS</a>
+			
+		</nav>
+		<h1 class="header__title"><a href="/">PlayGround</a></h1>
+		<h2 class="header__subtitle"></h2>
+	</header>
+
+	<main>
+		<article>
+	
+		<h1>前端框架的讨论</h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2017-03-23</span><br />
+		
+		
+			<span class="article__tags">
+			  	<a class="article__tag-link" href="/tags/FrontEnd/">FrontEnd</a>
+			</span>
+		
+	</div>
+
+	
+
+	
+		<h2 id="PWA-Progressive-Web-Apps"><a href="#PWA-Progressive-Web-Apps" class="headerlink" title="PWA(Progressive Web Apps)"></a>PWA(Progressive Web Apps)</h2><p>最近流行起来的一个新的概念，在 Android 上配合 Chrome 可以达到接近原生的效果，但是在 iOS 上放到主屏幕上还是很蠢的浏览器效果。</p>
+<p>网络上提到 PWA 的文章都会提到一个网站 <a href="http://mobile.twitter.com" target="_blank" rel="external">Twitter</a>，虽然可以用 PWA 这种开发方式实现基本的功能，但网页中还是没办法实现包括在线直播的功能，并且基本的浏览 tweet 功能也做得很简陋。</p>
+<a id="more"></a>
+<p>首先功能上就已经没有原生 App 强，第二用这种方法开发网页也不是很好利用 CSS 的响应式布局，如果与桌面端分开开发那效率上其实也不比使用原生快速多少。</p>
+<p>PWA 是一种利用 HTML 开发移动端 APP 的改善，但是需要浏览器更好地支持，需要通过浏览器获取更多系统的权限才能做出更多的功能，并且本质上还是 HTML 所以在安全性上比原生 APP 还有一点差距。但还是对这门技术抱有信心，希望经过 Google 的黑魔法可以做得更好。</p>
+<h2 id="前端框架-vs-模板引擎"><a href="#前端框架-vs-模板引擎" class="headerlink" title="前端框架 vs 模板引擎"></a>前端框架 vs 模板引擎</h2><p>又到了日常撕逼的时候，前端框架（React，Vue，Angular）和模板引擎（Jade/Pug，EJS，Mustaches）双方都有一万个理由看不起对方。但笔者认为，首先这两种技术都没有问题，只是看要解决什么问题。为什么前端框架写的叫 SPA（Single Page Application）而不是 SPW（Single Page Webpage），因为用前端框架写出来的网站的特点就是对<strong>除了</strong>展示以外的功能需求明显，有大量与用户的交互，有大量数据与页面元素的变化，所以需要能够工程化管理页面元素的前端框架。</p>
+<p>而如果一个简单的从数据库拿到新闻并且展示到页面上的网站就完全没有必要去使用 React，都不用说 React 的状态管理，连单向数据流都只流动了一次，渲染完毕也就结束了。另一方面，前端框架需要将组件拆得很细，但这又引出了另一个问题：样式提前设计，如果没有提前设计好组件想到哪写到哪那么使用前端框架将会陷入频繁修改的问题。所以使用哪种技术完全取决于项目的功能，针对不同的项目决定不同的实现方法。</p>
+<h2 id="React"><a href="#React" class="headerlink" title="React"></a>React</h2><h3 id="组件创建的四种写法"><a href="#组件创建的四种写法" class="headerlink" title="组件创建的四种写法"></a>组件创建的四种写法</h3><p><strong>es5实现</strong></p>
+<p><figure class="figure"><img src="/images/frontend1/img1.png" alt=""></figure></p>
+<p><strong>es6实现</strong></p>
+<p><figure class="figure"><img src="/images/frontend1/img2.png" alt=""></figure></p>
+<p><strong>纯函数实现</strong></p>
+<p><figure class="figure"><img src="/images/frontend1/img3.png" alt=""></figure></p>
+<p><strong>不使用 JSX 实现</strong></p>
+<p><figure class="figure"><img src="/images/frontend1/img4.png" alt=""></figure></p>
+<h3 id="style-和-key"><a href="#style-和-key" class="headerlink" title="style 和 key"></a>style 和 key</h3><p><figure class="figure"><img src="/images/frontend1/img5.png" alt=""></figure></p>
+<h3 id="Virtual-DOM"><a href="#Virtual-DOM" class="headerlink" title="Virtual DOM"></a>Virtual DOM</h3><p>大量真实的 DOM 操作会很消耗性能，为了避免这个问题，React 使用了 Virtual DOM。将 Virtual DOM 树保存在内存中，当页面需要改变重新渲染的时候首先比较 Virtual DOM 树，找到最小差异然后一次性修改 DOM，这样就可以减少真实 DOM 操作提高性能。</p>
+<h3 id="React-Diff-算法"><a href="#React-Diff-算法" class="headerlink" title="React Diff 算法"></a>React Diff 算法</h3><p>基于几个假设，可以将比较两个树的最小差异复杂度从 O(n<sup>3</sup>) 优化到 O(n)：</p>
+<ul>
+<li>在 HTML 操作中很少有跨层级移动节点，因此可以只比较同级节点</li>
+</ul>
+<p><figure class="figure"><img src="/images/frontend1/img6.png" alt=""></figure></p>
+<ul>
+<li>同级节点可以通过赋予唯一的 key 来判断是否改变</li>
+</ul>
+<p><figure class="figure"><img src="/images/frontend1/img7.png" alt=""></figure></p>
+<ul>
+<li>不同组件内部一般结构不同，所以只要发现组件改变直接替换，不去进行子节点比较</li>
+</ul>
+<p><figure class="figure"><img src="/images/frontend1/img8.png" alt=""></figure></p>
+<h3 id="Redux"><a href="#Redux" class="headerlink" title="Redux"></a>Redux</h3><p>React 作为一个单纯的 View 渲染层期望是不保存数据，只通过 state 的改变和传入的数据来渲染的一个纯函数。这就需要一个在高层的数据管理方案，Redux 就是现在一个很流行的状态管理方案，虽然纯的 Redux 可以配合各种前端框架甚至用 jQuery 都可以，但还是和 React 这种完全放弃数据管理的库配合能最好地体现 Redux 的优势。</p>
+<p><figure class="figure"><img src="/images/frontend1/img9.png" alt=""></figure></p>
+<h2 id="Vue-Angular"><a href="#Vue-Angular" class="headerlink" title="Vue / Angular"></a>Vue / Angular</h2><p>这两种框架都使用了 MVVM 的的设计模式，将数据和视图双向绑定，当一方改变另一方就会改变，实现原理大致就是观察者模式，但是使用的脏监测会比较消耗性能。</p>
+<h2 id="Vue1-Vue2"><a href="#Vue1-Vue2" class="headerlink" title="Vue1 / Vue2"></a>Vue1 / Vue2</h2><p>Vue1 与 Vue2 的过渡比较平滑，只是修改了少量 API 甚至让人没感觉到 Vue2 中已经使用了 Virtual DOM 技术。</p>
+<p>但是觉得 Vue1 到 2 最大的进步是 CSS 的封闭性。</p>
+<p>在 Vue1 中每个组件内写的 CSS 会被插入到全局，这样很容易会造成组件的样式污染</p>
+<p><figure class="figure"><img src="/images/frontend1/img10.png" alt=""></figure></p>
+<p>而在 Vue2 中每个组件会通过 data-v 标记，对应的 CSS 也会加上 data-v 选择器，这样的话就能保证在组件内写的 CSS 只会应用到该组件上</p>
+<p><figure class="figure"><img src="/images/frontend1/img11.png" alt=""></figure></p>
+<p><figure class="figure"><img src="/images/frontend1/img12.png" alt=""></figure></p>
+<h2 id="Angular1-Angular2"><a href="#Angular1-Angular2" class="headerlink" title="Angular1 / Angular2"></a>Angular1 / Angular2</h2><p>Angular1 对于组件化做的不是很好而更像添加了 Controller 管理数据的模板引擎，Angular2 将组件细化并且选择了 TypeScript 作为开发语言，使项目更加健壮并容易管理。因为对 Angular 和 TypeScript 不了解所以不做深入讨论。</p>
+
+	
+
+	
+		<span class="different-posts"><a href="/2017/03/23/frontend1/" onclick="window.history.go(-1); return false;">Go back </a></span>
+
+	
+
+</article>
+
+	</main>
+
+	<footer class="footer">
+	<div class="footer-content">
+		
+	      <div class="footer__element">
+	<p>Hi there, <br />welcome to my Blog glad you found it. Have a look around, will you?</p>
+</div>
+
+	    
+	      <div class="footer__element">
+	<h5>Check out</h5>
+	<ul class="footer-links">
+		<li class="footer-links__link"><a href="/archives">Archive</a></li>
+		
+		  <li class="footer-links__link"><a href="/atom.xml">RSS</a></li>
+	    
+		<li class="footer-links__link"><a href="/about">about page</a></li>
+		<li class="footer-links__link"><a href="/tags">Tags</a></li>
+		<li class="footer-links__link"><a href="/categories">Categories</a></li>
+	</ul>
+</div>
+
+	    
+
+		<div class="footer-credit">
+			<span>© 2017 TacGaming | Powered by <a href="https://hexo.io/">Hexo</a> | Theme <a href="https://github.com/HoverBaum/meilidu-hexo">MeiliDu</a></span>
+		</div>
+
+	</div>
+
+
+</footer>
+
+
+
+</body>
+
+</html>

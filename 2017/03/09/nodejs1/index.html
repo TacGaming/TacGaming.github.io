@@ -28,7 +28,7 @@
   </script>
 </head>
 
-<body>
+<body style="overflow-x: hidden;">
 
 	<header class="header">
 		<nav class="header__nav">
@@ -50,7 +50,7 @@
 		<h1>关于后端的一些讨论</h1>
 	
 	<div class="article__infos">
-		<span class="article__date">2017-03-02</span><br />
+		<span class="article__date">2017-03-09</span><br />
 		
 		
 			<span class="article__tags">
@@ -292,31 +292,30 @@ server.bind(&#39;8060&#39;,&#39;1.1.1.69&#39;);
 <li>这个方法是http.request方法的简化版，唯一的区别是http.get自动将请求方法设为了GET请求，同时不需要手动调用req.end()，但是需要记住的是，如果我们使用http.request方法时没有调用end方法，服务器将不会收到信息。因为http.get和http.request方法都是放回一个http.ClientRequest对象。 </li>
 <li><strong>http.ClientRequest</strong></li>
 <li>http.ClientRequest是由http.request或者是http.get返回产生的对象，表示一个已经产生而且正在进行中的HTPP请求，提供一个response事件，也就是我们使用http.get和http.request方法中的回调函数所绑定的对象，我们可以显式地绑定这个事件的监听函数。</li>
-<li>http.ClientRequest也提供了write和end函数，用于向服务器发送请求体，通常用于POST、PUT等操作，所有写操作都必须调用end函数来通知服务器，否则请求无效。此外，这个对象还提供了abort()、setTimeout()等方法，具体可以参考文档。</li>
-</ul>
+<li><p>http.ClientRequest也提供了write和end函数，用于向服务器发送请求体，通常用于POST、PUT等操作，所有写操作都必须调用end函数来通知服务器，否则请求无效。此外，这个对象还提供了abort()、setTimeout()等方法，具体可以参考文档。</p>
 <pre><code>var http=require(&quot;http&quot;);
 
 var options={
-    hostname:&quot;cn.bing.com&quot;,
-    port:80
+   hostname:&quot;cn.bing.com&quot;,
+   port:80
 }
 
 var req=http.request(options);
 req.on(&quot;response&quot;,function(res){
-        res.setEncoding(&quot;utf-8&quot;);
-    res.on(&quot;data&quot;,function(chunk){
-        console.log(chunk.toString())
-    });
-    console.log(res.statusCode);
+       res.setEncoding(&quot;utf-8&quot;);
+   res.on(&quot;data&quot;,function(chunk){
+       console.log(chunk.toString())
+   });
+   console.log(res.statusCode);
 })
 
 req.on(&quot;error&quot;,function(err){
-    console.log(err.message);
+   console.log(err.message);
 });
 req.end();
-</code></pre><ul>
+</code></pre></li>
 <li><strong>http.ClientReponse</strong></li>
-<li>与http.ServerRequest相似，提供了三个事件，data、end、close，分别在数据到达、传输结束和连接结束时触发，其中data事件传递一个参数chunk，表示接受到的数据。其属性如下<br><figure class="figure"><img src="http://upload-images.jianshu.io/upload_images/1641380-8d78262d6e00a5d0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="属性"><figcaption class="figure__caption">属性</figcaption></figure></li>
+<li>与http.ServerRequest相似，提供了三个事件，data、end、close，分别在数据到达、传输结束和连接结束时触发，其中data事件传递一个参数chunk，表示接受到的数据。其属性如下<br> <figure class="figure"><img src="http://upload-images.jianshu.io/upload_images/1641380-8d78262d6e00a5d0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="属性"><figcaption class="figure__caption">属性</figcaption></figure></li>
 <li>response.setEncoding([encoding])：设置默认的编码，当data事件被触发时，数据将会以encoding编码，默认值是null，也就是不编码，以buffer形式存储</li>
 <li>response.pause()：暂停结束数据和发送事件，方便实现下载功能</li>
 <li>response.resume()：从暂停的状态中恢复 </li>
@@ -327,7 +326,7 @@ req.end();
 	
 
 	
-		<span class="different-posts"><a href="/2017/03/02/nodejs1/" onclick="window.history.go(-1); return false;">Go back </a></span>
+		<span class="different-posts"><a href="/2017/03/09/nodejs1/" onclick="window.history.go(-1); return false;">Go back </a></span>
 
 	
 
